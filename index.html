@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Algoritmo: Implante inmediato vs diferido (Responsive + Lectura + Bibliografía)</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#111827; --primary:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+    --ink:#e5e7eb; --ink-dim:#9ca3af;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial;
+    background:radial-gradient(1200px 600px at 70% -10%,#1e293b 10%,var(--bg) 60%);
+    color:var(--ink); display:flex; align-items:center; justify-content:center; padding:16px;
+  }
+  .app{
+    width:min(1100px,100%); background:linear-gradient(180deg,#0b1228 0,#0b1228cc 60%,#0b1228 100%);
+    border:1px solid #1f2a44; border-radius:16px; box-shadow:0 18px 64px #0008; overflow:hidden;
+  }
+  header{
+    position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:12px;
+    padding:14px 16px; background:linear-gradient(90deg,#0ea5e9 0,#22c55e 100%); color:#fff;
+  }
+  header h1{font-size:18px; margin:0}
+  .hamb{margin-left:auto; appearance:none; border:none; background:#00000022; color:#fff; padding:8px 10px; border-radius:10px; cursor:pointer}
+  .content{display:grid; grid-template-columns:320px 1fr; min-height:560px}
+  /* Sidebar */
+  .side{background:var(--panel); border-right:1px solid #1f2a44; padding:12px; overflow:auto; -webkit-overflow-scrolling:touch;}
+  .side-inner{max-width:320px; margin:0 auto}
+  .step{
+    display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px; margin-bottom:8px;
+    cursor:pointer; color:var(--ink-dim); transition:.2s; border:1px solid transparent; touch-action:manipulation;
+  }
+  .step:hover{background:#0b1228; color:var(--ink)}
+  .step.active{background:#0b1228; color:#fff; border-color:#24406a}
+  .step small{margin-left:auto; opacity:.8}
+  .dot{width:10px; height:10px; border-radius:999px; background:#334155}
+  .step[data-state="ok"] .dot{background:var(--primary)}
+  .step[data-state="warn"] .dot{background:var(--warn)}
+  .step[data-state="no"] .dot{background:var(--danger)}
+  .bar{height:10px; background:#101a33; border:1px solid #20335a; border-radius:999px; overflow:hidden; margin-top:8px}
+  .bar>i{display:block; height:100%; background:linear-gradient(90deg,#22c55e,#0ea5e9); width:0%}
+  .chips{margin-top:8px; display:flex; flex-wrap:wrap; gap:6px}
+  .chip{background:#0b1228; border:1px solid #26406f; color:#cbd5e1; font-size:12px; padding:6px 10px; border-radius:999px}
+  /* Main */
+  .main{padding:16px}
+  .panel{display:none; animation:.25s fade ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+  .card{background:linear-gradient(180deg,#0f172a,#0b1228); border:1px solid #22365b; border-radius:14px; padding:16px; margin-bottom:14px}
+  h2{margin:0 0 8px; font-size:18px}
+  p.lead{margin:0 0 12px; color:var(--ink-dim)}
+  .grid{display:grid; gap:10px}
+  .grid.cols-2{grid-template-columns:repeat(2,1fr)}
+  .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+  .btn{
+    appearance:none; border:1px solid #2a3d69; background:#0b1228; color:#e5e7eb;
+    padding:14px; border-radius:12px; cursor:pointer; font-weight:600; width:100%; text-align:left; transition:.2s;
+  }
+  .btn:active{transform:scale(.99)}
+  .btn:hover{border-color:#3b5aa3; background:#0c1530}
+  .btn[data-on="true"]{border-color:#3ee088; box-shadow:inset 0 0 0 999px #22c55e22}
+  .note{font-size:12px; color:#9aa7c5; margin-top:8px}
+  .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+  .link{background:#0ea5e9; border:0; color:#02111f; padding:12px 14px; border-radius:10px; font-weight:800; cursor:pointer}
+  .ghost{background:#0b1228; border:1px solid #2a3d69; color:#cbd5e1; padding:12px 14px; border-radius:10px; cursor:pointer}
+  .result{padding:16px; border-radius:12px; font-weight:700; margin-top:8px}
+  .ok{background:#052d1a; border:1px solid #1f9d5d; color:#c7f7dd}
+  .warn{background:#332408; border:1px solid #d89a25; color:#ffe9b7}
+  .no{background:#3a0d0d; border:1px solid #dc5656; color:#ffd1d1}
+  footer{border-top:1px dashed #20335a; color:#9fb4d9; font-size:12px; padding:10px 12px}
+
+  /* Responsive */
+  @media (max-width: 860px){
+    .content{grid-template-columns:1fr}
+    .side{
+      position:fixed; inset:56px 0 auto 0; height:calc(100dvh - 56px);
+      transform:translateX(-100%); transition:.25s ease; border-right:none; border-top:1px solid #1f2a44;
+      background:#0b1228;
+    }
+    .side.open{transform:none}
+    .main{padding:14px}
+    .grid.cols-3{grid-template-columns:1fr 1fr}
+    .grid.cols-2{grid-template-columns:1fr}
+    .btn{padding:16px; font-size:15px}
+  }
+  @media (max-width: 420px){
+    header h1{font-size:16px}
+    .card{padding:14px}
+    .btn{padding:14px; font-size:14px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important}
+  }
+</style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="Algoritmo de decisión implantológica">
+    <header>
+      <h1>Algoritmo: Implante inmediato vs diferido. Carlos Petit Lorusso.</h1>
+      <button class="hamb" id="menu" aria-controls="sidebar" aria-expanded="false">☰ Pasos</button>
+    </header>
+
+    <div class="content">
+      <!-- SIDEBAR -->
+      <aside class="side" id="sidebar" aria-label="Navegación de pasos">
+        <div class="side-inner">
+          <div class="step active" data-target="p0" id="s0"><span class="dot"></span> Inicio <small>0%</small></div>
+          <div class="step" data-target="pA" id="sA"><span class="dot"></span> A. Paciente <small>—</small></div>
+          <div class="step" data-target="pB1" id="sB1"><span class="dot"></span> B1. Tabla vestibular <small>—</small></div>
+          <div class="step" data-target="pB2" id="sB2"><span class="dot"></span> B2. Fenotipo <small>—</small></div>
+          <div class="step" data-target="pB3" id="sB3"><span class="dot"></span> B3. Infección <small>—</small></div>
+          <div class="step" data-target="pB4" id="sB4"><span class="dot"></span> B4. Estabilidad/3D <small>—</small></div>
+          <div class="step" data-target="pC" id="sC"><span class="dot"></span> C. Decisión <small>—</small></div>
+          <div class="step" data-target="pRead" id="sRead"><span class="dot"></span> Leer algoritmo <small>texto</small></div>
+          <div class="step" data-target="pRefs" id="sRefs"><span class="dot"></span> Bibliografía <small>5 refs</small></div>
+          <div class="bar" aria-label="Progreso"><i id="progress"></i></div>
+          <div class="chips" id="chips" aria-live="polite"></div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <!-- START -->
+        <section class="panel active" id="p0">
+          <div class="card">
+            <h2>¿Cómo usar este flujo?</h2>
+            <p class="lead">Avanza por A → B → C. Selecciona opciones y obtén la recomendación. Usa “Leer algoritmo” para ver el texto completo.</p>
+            <div class="actions">
+              <button class="link" data-goto="pA">Comenzar</button>
+              <button class="ghost" data-goto="pRead">Leer algoritmo</button>
+              <button class="ghost" data-goto="pRefs">Ver bibliografía</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- A. PACIENTE -->
+        <section class="panel" id="pA">
+          <div class="card">
+            <h2>A. Evaluación del paciente</h2>
+            <p class="lead">Activa los criterios cumplidos.</p>
+            <div class="grid cols-2">
+              <button class="btn" data-key="asa_ok">ASA I–II · Sin infección aguda · Buen control de placa</button>
+              <button class="btn" data-key="habitos_ok">No fumador / leve · Parafunción controlada</button>
+              <button class="btn" data-key="expect_ok">Expectativas estéticas realistas</button>
+            </div>
+            <div class="actions">
+              <button class="ghost" data-reset>Reiniciar</button>
+              <button class="link" data-goto="pB1">Siguiente</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- B1. TABLA VESTIBULAR -->
+        <section class="panel" id="pB1">
+          <div class="card">
+            <h2>B1. Tabla vestibular (CBCT)</h2>
+            <div class="grid cols-3">
+              <button class="btn" data-key="vestibular" data-val="ideal">≥ 2.0 mm (ideal)</button>
+              <button class="btn" data-key="vestibular" data-val="limite">1.0–1.8 mm (límite)</button>
+              <button class="btn" data-key="vestibular" data-val="defecto">&lt; 1.0 mm / dehiscencia</button>
+            </div>
+            <div class="actions">
+              <button class="ghost" data-goto="pA">Atrás</button>
+              <button class="link" data-goto="pB2">Siguiente</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- B2. FENOTIPO -->
+        <section class="panel" id="pB2">
+          <div class="card">
+            <h2>B2. Fenotipo gingival</h2>
+            <div class="grid cols-2">
+              <button class="btn" data-key="fenotipo" data-val="grueso">Grueso (favorable)</button>
+              <button class="btn" data-key="fenotipo" data-val="fino">Fino (añadir CTG / cautela)</button>
+            </div>
+            <div class="actions">
+              <button class="ghost" data-goto="pB1">Atrás</button>
+              <button class="link" data-goto="pB3">Siguiente</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- B3. INFECCIÓN -->
+        <section class="panel" id="pB3">
+          <div class="card">
+            <h2>B3. Infección</h2>
+            <div class="grid cols-3">
+              <button class="btn" data-key="inf" data-val="no">Sin infección</button>
+              <button class="btn" data-key="inf" data-val="cronica">Crónica controlable (debridamiento + ATB)</button>
+              <button class="btn" data-key="inf" data-val="aguda">Aguda / supurativa (diferir)</button>
+            </div>
+            <div class="actions">
+              <button class="ghost" data-goto="pB2">Atrás</button>
+              <button class="link" data-goto="pB4">Siguiente</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- B4. ESTABILIDAD | POSICIÓN 3D -->
+        <section class="panel" id="pB4">
+          <div class="card">
+            <h2>B4. Estabilidad primaria y posición 3D</h2>
+            <div class="grid cols-2">
+              <button class="btn" data-key="estab" data-val="ok">Anclaje 3–5 mm · Torque ≥35 Ncm · ISQ &gt; 65</button>
+              <button class="btn" data-key="estab" data-val="dudosa">Estabilidad dudosa</button>
+              <button class="btn" data-key="pos3d" data-val="ok">Trayectoria palatinizada · Plataforma ~3 mm apical</button>
+              <button class="btn" data-key="pos3d" data-val="no">Posición 3D no ideal</button>
+            </div>
+            <div class="actions">
+              <button class="ghost" data-goto="pB3">Atrás</button>
+              <button class="link" data-goto="pC">Ver decisión</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- C. DECISIÓN -->
+        <section class="panel" id="pC">
+          <div class="card">
+            <h2>C. Recomendación</h2>
+            <div id="out" class="result">Completa los pasos para obtener la recomendación.</div>
+            <div class="note" id="hint"></div>
+            <div class="actions">
+              <button class="ghost" data-goto="pB4">Atrás</button>
+              <button class="link" data-reset>Reiniciar</button>
+              <button class="ghost" data-goto="pRead">Leer algoritmo</button>
+              <button class="ghost" data-goto="pRefs">Bibliografía</button>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Resumen</h2>
+            <div id="summary"></div>
+          </div>
+        </section>
+
+        <!-- LEER ALGORITMO -->
+        <section class="panel" id="pRead">
+          <div class="card">
+            <h2>Leer algoritmo</h2>
+            <div class="lead" style="max-height:60vh; overflow:auto; line-height:1.4">
+              <p><strong>Algoritmo de decisión (evidence-based): ¿inmediato o diferido?</strong></p>
+              <p><strong>A. Evaluación del paciente (macro-riesgo)</strong><br>
+              Estado sistémico controlado (ASA I–II); no urgencias infecciosas agudas; buen control de placa.<br>
+              Hábitos: no fumador o fumador leve (valorar riesgo); bruxismo/parafunción controlados.<br>
+              Expectativas estéticas realistas; adherencia a mantenimiento.</p>
+
+              <p><strong>B. Evaluación del sitio (CBCT y clínica)</strong><br>
+              <u>Integridad y espesor de la tabla vestibular:</u><br>
+              ≥2,0 mm (ideal) → favorece inmediato.<br>
+              1,0–1,8 mm → considerar inmediato con aumento (óseo y/o CTG) o ARP + diferido si línea de sonrisa alta/fenotipo fino.<br>
+              &lt;1,0 mm o dehiscencia/fenestración → ARP + diferido (o aumento simultáneo muy selectivo por manos expertas).</p>
+
+              <p><u>Fenotipo gingival:</u><br>
+              Grueso → mejor pronóstico para inmediato.<br>
+              Fino → añadir CTG o preferir diferido si estética exigente.</p>
+
+              <p><u>Infección:</u><br>
+              Aguda/supurativa → diferido tras resolución.<br>
+              Crónica controlable → se puede considerar inmediato con debridamiento + antibiótico, sabiendo que el riesgo aumenta [18].</p>
+
+              <p><u>Estabilidad primaria:</u> posibilidad de anclaje apical 3–5 mm; torque ≥35 Ncm / ISQ &gt;65.<br>
+              <u>Posición tridimensional:</u> palatinizada, plataforma ~3 mm apical al margen gingival planificado, distancia adecuada a dientes adyacentes (≥1,5–2 mm).</p>
+
+              <p><strong>C. Decisión simplificada</strong><br>
+              Cumple A + B + C (pared vestibular ≥1,8–2,0 mm, fenotipo favorable, sin infección aguda, estabilidad primaria, posición 3D posible): <em>Implante Inmediato (tipo 1)</em>.<br>
+              Manejo del gap (injerto particulado si &gt;1–2 mm o en estética), CTG si fenotipo fino/línea alta, provisional atornillado sin oclusión.</p>
+
+              <p>No cumple (pared delgada/defecto, fenotipo fino con línea alta, infección aguda, estabilidad dudosa): <em>Preservación alveolar (ARP) e Implante Diferido (tipo 4)</em>.<br>
+              Colocar implante tras 8–12 semanas (tejido blando) o 3–4 meses (tejido duro), según magnitud del defecto y tipo de injerto.</p>
+            </div>
+            <div class="actions">
+              <button class="ghost" data-goto="pC">Volver</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- BIBLIOGRAFÍA -->
+        <section class="panel" id="pRefs">
+          <div class="card">
+            <h2>Bibliografía</h2>
+            <ol style="margin:0; padding-left:18px; line-height:1.5">
+              <li>Chrcanovic BR, Albrektsson T, Wennerberg A. Dental implants in fresh extraction sockets versus healed sites: systematic review and meta-analysis. <em>J Dent.</em> 2015;43(1):16–41.</li>
+              <li>Patel R, Pinheiro J, AlShammari G, Tomlinson TB, Thomas N, Harrison B. Differences in Dental Implant Survival between Immediate vs Delayed Placement: A Systematic Review and Meta-Analysis. <em>Dent J (Basel).</em> 2023;11(9):218.</li>
+              <li>Slagter KW, Meijer HJA, Hentenaar DFM, et al. Immediate single-tooth implant placement with simultaneous bone augmentation vs delayed placement after ridge preservation in bony defect sites in the esthetic region: 5-year RCT. <em>J Periodontol.</em> 2021;92(12):1738–48.</li>
+              <li>Evans CDJ, Chen ST. Esthetic outcomes of immediate implant placements. <em>Clin Oral Implants Res.</em> 2008;19(1):73–80.</li>
+              <li>Hamilton A, et al. Selection criteria for immediate implant placement and restoration: a critical review. <em>Clin Oral Implants Res.</em> 2023;34(12):2331–50.</li>
+            </ol>
+            <div class="actions">
+              <button class="ghost" data-goto="pC">Volver</button>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+    <footer>
+      Móvil: pulsa <b>☰ Pasos</b> para abrir/cerrar el menú · Accesos: Reiniciar en “A”
+    </footer>
+  </div>
+
+<script>
+(function(){
+  const panels=[...document.querySelectorAll('.panel')];
+  const steps=[...document.querySelectorAll('.step')];
+  const chips=document.getElementById('chips');
+  const out=document.getElementById('out');
+  const hint=document.getElementById('hint');
+  const summary=document.getElementById('summary');
+  const progress=document.getElementById('progress');
+  const side=document.getElementById('sidebar');
+  const menu=document.getElementById('menu');
+
+  const state={ asa_ok:false, habitos_ok:false, expect_ok:false,
+    vestibular:null, fenotipo:null, inf:null, estab:null, pos3d:null };
+
+  function go(id){
+    panels.forEach(p=>p.classList.toggle('active',p.id===id));
+    steps.forEach(s=>s.classList.toggle('active',s.dataset.target===id));
+    updateProgress();
+    if (matchMedia('(max-width: 860px)').matches) toggleSide(false);
+  }
+  document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.goto)));
+  steps.forEach(s=>s.addEventListener('click',()=>go(s.dataset.target)));
+
+  function reset(){
+    Object.keys(state).forEach(k=>state[k]=(typeof state[k]==='boolean')?false:null);
+    document.querySelectorAll('.btn[data-on]').forEach(b=>b.removeAttribute('data-on'));
+    document.querySelectorAll('.step').forEach(s=>s.dataset.state='');
+    chips.innerHTML=''; if(out){ out.className='result'; out.textContent='Completa los pasos para obtener la recomendación.'; }
+    if(hint) hint.textContent=''; if(summary) summary.innerHTML='';
+    go('p0');
+  }
+  document.querySelectorAll('[data-reset]').forEach(b=>b.addEventListener('click',reset));
+
+  function toggleBoolean(btn,key){
+    const on=!(btn.dataset.on==='true'); btn.dataset.on=on; state[key]=on;
+    stampChip(); markStep('sA',(state.asa_ok&&state.habitos_ok&&state.expect_ok)?'ok':(state.asa_ok||state.habitos_ok||state.expect_ok)?'warn':'');
+  }
+  function setEnum(groupKey,val,btn){
+    document.querySelectorAll('.btn[data-key="'+groupKey+'"]').forEach(b=>b.removeAttribute('data-on'));
+    btn.dataset.on='true'; state[groupKey]=val; stampChip();
+    if(groupKey==='vestibular') markStep('sB1',val==='ideal'?'ok':(val==='limite'?'warn':'no'));
+    if(groupKey==='fenotipo')   markStep('sB2',val==='grueso'?'ok':'warn');
+    if(groupKey==='inf')        markStep('sB3',val==='aguda'?'no':(val==='cronica'?'warn':'ok'));
+    if(groupKey==='estab'||groupKey==='pos3d'){
+      const good=(state.estab==='ok'&&state.pos3d==='ok'); const some=(state.estab||state.pos3d);
+      markStep('sB4',good?'ok':(some?'warn':''));
+    }
+  }
+  document.querySelectorAll('.btn[data-key]').forEach(b=>{
+    const key=b.dataset.key;
+    if(['asa_ok','habitos_ok','expect_ok'].includes(key)){
+      b.addEventListener('click',()=>toggleBoolean(b,key));
+    }else{
+      b.addEventListener('click',()=>setEnum(key,b.dataset.val,b));
+    }
+  });
+  function markStep(id,st){ const s=document.getElementById(id); if(s) s.dataset.state=st||''; }
+
+  function stampChip(){
+    const map={
+      asa_ok:['Paciente','ASA I–II / sin infección aguda / buen control'],
+      habitos_ok:['Hábitos','No fumador / leve · parafunción controlada'],
+      expect_ok:['Expectativas','Realistas / adherente'],
+      vestibular:['Tabla','≥2.0 mm','1.0–1.8 mm','<1.0 mm/defecto'],
+      fenotipo:['Fenotipo','Grueso','Fino'],
+      inf:['Infección','Sin','Crónica ctrl','Aguda'],
+      estab:['Estabilidad','OK','Dudosa'],
+      pos3d:['Posición 3D','OK','No ideal']
+    };
+    chips.innerHTML='';
+    for(const [k] of Object.entries(state)){
+      if(state[k]===true){
+        chips.insertAdjacentHTML('beforeend',`<span class="chip">${map[k][0]}: OK</span>`);
+      }else if(state[k] && state[k]!==false){
+        let label='';
+        if(k==='vestibular') label = state[k]==='ideal'?map[k][1]:state[k]==='limite'?map[k][2]:map[k][3];
+        if(k==='fenotipo')   label = state[k]==='grueso'?map[k][1]:map[k][2];
+        if(k==='inf')        label = state[k]==='no'?map[k][1]:state[k]==='cronica'?map[k][2]:map[k][3];
+        if(k==='estab')      label = state[k]==='ok'?map[k][1]:map[k][2];
+        if(k==='pos3d')      label = state[k]==='ok'?map[k][1]:map[k][2];
+        chips.insertAdjacentHTML('beforeend',`<span class="chip">${map[k][0]}: ${label}</span>`);
+      }
+    }
+  }
+  function updateProgress(){
+    const order=['pA','pB1','pB2','pB3','pB4','pC'];
+    const idx=order.findIndex(id=>document.getElementById(id).classList.contains('active'));
+    const pct=Math.max(0,(idx+1)/(order.length+0.4)*100);
+    const bar=document.getElementById('progress'); if(bar) bar.style.width=pct.toFixed(0)+'%';
+    const s=steps.find(x=>x.classList.contains('active')); if(s) s.querySelector('small').textContent=(pct|0)+'%';
+  }
+  function decide(){
+    const aOK=(state.asa_ok&&state.habitos_ok&&state.expect_ok);
+    const vb=state.vestibular, fen=state.fenotipo, inf=state.inf, stab=state.estab, pos=state.pos3d;
+    let notes=[];
+    if(!out) return;
+    if(inf==='aguda' || vb==='defecto' || stab==='dudosa' || pos==='no'){
+      out.className='result no';
+      out.textContent='Recomendación: ARP + Implante diferido (Tipo 4)';
+      notes=['8–12 semanas (tejido blando) / 3–4 meses (tejido duro)'];
+    }else if(vb==='ideal' && fen==='grueso' && aOK && stab==='ok' && pos==='ok' && (inf==='no' || inf===null)){
+      out.className='result ok';
+      out.textContent='Recomendación: Implante inmediato (Tipo 1)';
+      notes=['Manejo del gap (>1–2 mm o en estética): injerto particulado','CTG si fenotipo fino/línea alta'];
+    }else if(vb==='limite' && aOK && stab==='ok' && pos==='ok' && inf!=='aguda'){
+      out.className='result warn';
+      out.textContent='Implante inmediato con aumento (óseo y/o CTG) · Alternativa: ARP + diferido';
+    }else{
+      out.className='result warn';
+      out.textContent='Complete criterios para definir la recomendación.';
+    }
+    if(hint) hint.innerHTML=notes.length?('• '+notes.join('<br>• ')):'';
+    renderSummary();
+  }
+  function renderSummary(){
+    if(!summary) return;
+    const rows=[
+      ['Paciente', state.asa_ok&&state.habitos_ok&&state.expect_ok ? 'OK' : 'Incompleto'],
+      ['Tabla', state.vestibular||'—'],
+      ['Fenotipo', state.fenotipo||'—'],
+      ['Infección', state.inf||'—'],
+      ['Estabilidad', state.estab||'—'],
+      ['Posición 3D', state.pos3d||'—']
+    ];
+    summary.innerHTML='<div class="grid cols-2">'+rows.map(([k,v])=>`<div class="btn" style="pointer-events:none;border-color:#243b68">${k}: <b>${v}</b></div>`).join('')+'</div>';
+  }
+  const decBtn = document.querySelector('[data-goto="pC"]');
+  if(decBtn) decBtn.addEventListener('click',decide);
+  const sideC = document.getElementById('sC'); if(sideC) sideC.addEventListener('click',decide);
+
+  // Mobile sidebar toggle
+  function toggleSide(force){
+    const open = typeof force==='boolean' ? force : !side.classList.contains('open');
+    side.classList.toggle('open', open);
+    menu.setAttribute('aria-expanded', String(open));
+  }
+  menu.addEventListener('click', ()=>toggleSide());
+  document.addEventListener('click', (e)=>{
+    if(matchMedia('(max-width: 860px)').matches){
+      if(side.classList.contains('open') && !side.contains(e.target) && e.target!==menu){
+        toggleSide(false);
+      }
+    }
+  });
+
+  // Init
+  reset(); go('p0');
+})();
+</script>
+</body>
+</html>
