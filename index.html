@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Algoritmo: Implante inmediato vs diferido (Responsive + Lectura + Bibliografía)</title>
+<title>Algoritmo: Implante inmediato vs diferido (Responsive + Lectura + Bibliografía + Glosario)</title>
 <style>
   :root{
     --bg:#0f172a; --panel:#111827; --primary:#22c55e; --warn:#f59e0b; --danger:#ef4444;
@@ -100,7 +100,7 @@
 <body>
   <div class="app" role="application" aria-label="Algoritmo de decisión implantológica">
     <header>
-      <h1>Algoritmo: Implante inmediato vs diferido. Carlos Petit Lorusso.</h1>
+      <h1>Algoritmo: Implante inmediato vs diferido · Carlos Petit Lorusso</h1>
       <button class="hamb" id="menu" aria-controls="sidebar" aria-expanded="false">☰ Pasos</button>
     </header>
 
@@ -116,7 +116,8 @@
           <div class="step" data-target="pB4" id="sB4"><span class="dot"></span> B4. Estabilidad/3D <small>—</small></div>
           <div class="step" data-target="pC" id="sC"><span class="dot"></span> C. Decisión <small>—</small></div>
           <div class="step" data-target="pRead" id="sRead"><span class="dot"></span> Leer algoritmo <small>texto</small></div>
-          <div class="step" data-target="pRefs" id="sRefs"><span class="dot"></span> Bibliografía <small>5 refs</small></div>
+          <div class="step" data-target="pRefs" id="sRefs"><span class="dot"></span> Bibliografía <small>actualizada</small></div>
+          <div class="step" data-target="pGloss" id="sGloss"><span class="dot"></span> Glosario <small>términos</small></div>
           <div class="bar" aria-label="Progreso"><i id="progress"></i></div>
           <div class="chips" id="chips" aria-live="polite"></div>
         </div>
@@ -128,11 +129,12 @@
         <section class="panel active" id="p0">
           <div class="card">
             <h2>¿Cómo usar este flujo?</h2>
-            <p class="lead">Avanza por A → B → C. Selecciona opciones y obtén la recomendación. Usa “Leer algoritmo” para ver el texto completo.</p>
+            <p class="lead">Avanza por A → B → C. Selecciona opciones y obtén una recomendación **siempre**. Usa “Leer algoritmo”, “Bibliografía” y “Glosario” para apoyo.</p>
             <div class="actions">
               <button class="link" data-goto="pA">Comenzar</button>
               <button class="ghost" data-goto="pRead">Leer algoritmo</button>
-              <button class="ghost" data-goto="pRefs">Ver bibliografía</button>
+              <button class="ghost" data-goto="pRefs">Bibliografía</button>
+              <button class="ghost" data-goto="pGloss">Glosario</button>
             </div>
           </div>
         </section>
@@ -206,7 +208,7 @@
           <div class="card">
             <h2>B4. Estabilidad primaria y posición 3D</h2>
             <div class="grid cols-2">
-              <button class="btn" data-key="estab" data-val="ok">Anclaje 3–5 mm · Torque ≥35 Ncm · ISQ &gt; 65</button>
+              <button class="btn" data-key="estab" data-val="ok">Anclaje 3–5 mm · Torque ≥35 N·cm · ISQ &gt; 65</button>
               <button class="btn" data-key="estab" data-val="dudosa">Estabilidad dudosa</button>
               <button class="btn" data-key="pos3d" data-val="ok">Trayectoria palatinizada · Plataforma ~3 mm apical</button>
               <button class="btn" data-key="pos3d" data-val="no">Posición 3D no ideal</button>
@@ -229,6 +231,7 @@
               <button class="link" data-reset>Reiniciar</button>
               <button class="ghost" data-goto="pRead">Leer algoritmo</button>
               <button class="ghost" data-goto="pRefs">Bibliografía</button>
+              <button class="ghost" data-goto="pGloss">Glosario</button>
             </div>
           </div>
           <div class="card">
@@ -241,36 +244,31 @@
         <section class="panel" id="pRead">
           <div class="card">
             <h2>Leer algoritmo</h2>
-            <div class="lead" style="max-height:60vh; overflow:auto; line-height:1.4">
-              <p><strong>Algoritmo de decisión (evidence-based): ¿inmediato o diferido?</strong></p>
-              <p><strong>A. Evaluación del paciente (macro-riesgo)</strong><br>
-              Estado sistémico controlado (ASA I–II); no urgencias infecciosas agudas; buen control de placa.<br>
-              Hábitos: no fumador o fumador leve (valorar riesgo); bruxismo/parafunción controlados.<br>
-              Expectativas estéticas realistas; adherencia a mantenimiento.</p>
+            <div class="lead" style="max-height:60vh; overflow:auto; line-height:1.45">
+              <p><strong>Orden de decisión (prioridades clínicas)</strong></p>
 
-              <p><strong>B. Evaluación del sitio (CBCT y clínica)</strong><br>
-              <u>Integridad y espesor de la tabla vestibular:</u><br>
-              ≥2,0 mm (ideal) → favorece inmediato.<br>
-              1,0–1,8 mm → considerar inmediato con aumento (óseo y/o CTG) o ARP + diferido si línea de sonrisa alta/fenotipo fino.<br>
-              &lt;1,0 mm o dehiscencia/fenestración → ARP + diferido (o aumento simultáneo muy selectivo por manos expertas).</p>
+              <p><strong>1)</strong> Infección aguda/supurativa → <em>Diferido (Tipo 4)</em> (resolver infección primero).</p>
+              <p><strong>2)</strong> Tabla vestibular &lt;1,0 mm / dehiscencia-fenestración → <em>Diferido (Tipo 4)</em> (o aumento simultáneo solo por manos expertas; por defecto, diferido).</p>
+              <p><strong>3)</strong> Estabilidad dudosa o posición 3D no ideal → <em>Diferido (Tipo 4)</em> (si no aseguras anclaje 3–5 mm, ≥35 N·cm/ISQ &gt; 65 y palatinización, no inmediato).</p>
+              <p><strong>4)</strong> Criterios del paciente (A) <u>no</u> completos (ASA I–II/placa/expectativas/hábitos) → <em>Diferido (Tipo 4)</em> (optimiza sistémico, control de placa, parafunción, tabaco).</p>
 
-              <p><u>Fenotipo gingival:</u><br>
-              Grueso → mejor pronóstico para inmediato.<br>
-              Fino → añadir CTG o preferir diferido si estética exigente.</p>
+              <p><strong>5)</strong> Vestibular 1,0–1,8 mm y (estabilidad OK y 3D OK y infección ≠ aguda)<br>
+              – Fenotipo grueso → <em>Inmediato con aumento</em> (xenoinjerto/particulado; membrana según defecto).<br>
+              – Fenotipo fino o línea de sonrisa alta → <em>Inmediato con aumento + CTG</em>; si alto compromiso estético → <em>Diferido (ARP→Tipo 4)</em>.</p>
 
-              <p><u>Infección:</u><br>
-              Aguda/supurativa → diferido tras resolución.<br>
-              Crónica controlable → se puede considerar inmediato con debridamiento + antibiótico, sabiendo que el riesgo aumenta [18].</p>
+              <p><strong>6)</strong> Vestibular ≥2,0 mm y (estabilidad OK y 3D OK y infección “no” o crónica controlable)<br>
+              – Fenotipo grueso → <em>Inmediato (Tipo 1)</em>.<br>
+              – Fenotipo fino → <em>Inmediato (Tipo 1) + CTG</em>; en estética exigente puedes optar por <em>Inmediato con aumento</em>.</p>
 
-              <p><u>Estabilidad primaria:</u> posibilidad de anclaje apical 3–5 mm; torque ≥35 Ncm / ISQ &gt;65.<br>
-              <u>Posición tridimensional:</u> palatinizada, plataforma ~3 mm apical al margen gingival planificado, distancia adecuada a dientes adyacentes (≥1,5–2 mm).</p>
+              <p><strong>7)</strong> Infección crónica controlable (debridamiento + ATB + cierre) con todo lo anterior cumplido → Mantén la recomendación de 5) o 6) pero añade “riesgo ↑; seguimiento estricto”. Si falta cualquiera de los requisitos de 5)–6) → <em>Diferido</em>.</p>
 
-              <p><strong>C. Decisión simplificada</strong><br>
-              Cumple A + B + C (pared vestibular ≥1,8–2,0 mm, fenotipo favorable, sin infección aguda, estabilidad primaria, posición 3D posible): <em>Implante Inmediato (tipo 1)</em>.<br>
-              Manejo del gap (injerto particulado si &gt;1–2 mm o en estética), CTG si fenotipo fino/línea alta, provisional atornillado sin oclusión.</p>
+              <p><strong>8)</strong> Datos incompletos (cualquier campo no seleccionado) → <em>Diferido (por precaución)</em>.</p>
 
-              <p>No cumple (pared delgada/defecto, fenotipo fino con línea alta, infección aguda, estabilidad dudosa): <em>Preservación alveolar (ARP) e Implante Diferido (tipo 4)</em>.<br>
-              Colocar implante tras 8–12 semanas (tejido blando) o 3–4 meses (tejido duro), según magnitud del defecto y tipo de injerto.</p>
+              <p><strong>Salidas posibles (siempre una)</strong><br>
+              – Inmediato (Tipo 1)<br>
+              – Inmediato con aumento (óseo ± membrana) ± CTG<br>
+              – Diferido (ARP → Tipo 4)<br>
+              – Diferido (por precaución; completar criterios)</p>
             </div>
             <div class="actions">
               <button class="ghost" data-goto="pC">Volver</button>
@@ -278,17 +276,64 @@
           </div>
         </section>
 
-        <!-- BIBLIOGRAFÍA -->
+        <!-- BIBLIOGRAFÍA (ACTUALIZADA) -->
         <section class="panel" id="pRefs">
           <div class="card">
             <h2>Bibliografía</h2>
-            <ol style="margin:0; padding-left:18px; line-height:1.5">
-              <li>Chrcanovic BR, Albrektsson T, Wennerberg A. Dental implants in fresh extraction sockets versus healed sites: systematic review and meta-analysis. <em>J Dent.</em> 2015;43(1):16–41.</li>
-              <li>Patel R, Pinheiro J, AlShammari G, Tomlinson TB, Thomas N, Harrison B. Differences in Dental Implant Survival between Immediate vs Delayed Placement: A Systematic Review and Meta-Analysis. <em>Dent J (Basel).</em> 2023;11(9):218.</li>
-              <li>Slagter KW, Meijer HJA, Hentenaar DFM, et al. Immediate single-tooth implant placement with simultaneous bone augmentation vs delayed placement after ridge preservation in bony defect sites in the esthetic region: 5-year RCT. <em>J Periodontol.</em> 2021;92(12):1738–48.</li>
-              <li>Evans CDJ, Chen ST. Esthetic outcomes of immediate implant placements. <em>Clin Oral Implants Res.</em> 2008;19(1):73–80.</li>
-              <li>Hamilton A, et al. Selection criteria for immediate implant placement and restoration: a critical review. <em>Clin Oral Implants Res.</em> 2023;34(12):2331–50.</li>
-            </ol>
+            <div class="lead" style="max-height:60vh; overflow:auto; line-height:1.5">
+              <ol style="margin:0; padding-left:18px">
+                <li>Tan WL, Wong TL, Wong MCM, Lang NP. A systematic review of post-extractional alveolar hard and soft tissue dimensional changes in humans. <em>Clin Oral Implants Res.</em> 2012;23(Suppl 5):1–21.</li>
+                <li>Van der Weijden F, Dell’Acqua F, Slot DE. Alveolar bone dimensional changes of post-extraction sockets in humans: a systematic review. <em>J Clin Periodontol.</em> 2009;36(12):1048–58.</li>
+                <li>Schropp L, Wenzel A, Kostopoulos L, Karring T. Bone healing and soft-tissue contour changes following single-tooth extraction. <em>Int J Periodontics Restorative Dent.</em> 2003;23(4):313–23.</li>
+                <li>Araújo MG, Lindhe J. Dimensional ridge alterations following tooth extraction: an experimental study in the dog. <em>J Clin Periodontol.</em> 2005;32(2):212–8.</li>
+                <li>Botticelli D, Berglundh T, Buser D, Lindhe J. The jumping distance revisited: an experimental study in the dog. <em>Clin Oral Implants Res.</em> 2003;14(1):35–42.</li>
+                <li>Botticelli D, Berglundh T, Lindhe J. Hard-tissue alterations following immediate implant placement in extraction sites. <em>J Clin Periodontol.</em> 2004;31(10):820–8.</li>
+                <li>Avila-Ortiz G, Elangovan S, Kramer KW, Blanchette D, Dawson DV. Effect of alveolar ridge preservation: a systematic review and meta-analysis. <em>J Dent Res.</em> 2014;93(10):950–8.</li>
+                <li>Lang NP, Pun L, Lau KY, Li KY, Wong MCM. Survival and success rates of implants placed into fresh extraction sockets: a systematic review. <em>Clin Oral Implants Res.</em> 2012;23(Suppl 5):39–66.</li>
+                <li>Chrcanovic BR, Albrektsson T, Wennerberg A. Dental implants in fresh extraction sockets versus healed sites: systematic review and meta-analysis. <em>J Dent.</em> 2015;43(1):16–41.</li>
+                <li>Papaspyridakos P, Chen CJ, Chuang SK, Weber HP, Gallucci GO. Complications and survival rates of implant-supported fixed complete dental prostheses: a systematic review. <em>Int J Oral Maxillofac Implants.</em> 2012;27(1):102–10.</li>
+                <li>Patel R, Pinheiro J, AlShammari G, Tomlinson TB, Thomas N, Harrison B. Differences in Dental Implant Survival between Immediate vs Delayed Placement: A Systematic Review and Meta-Analysis. <em>Dent J (Basel).</em> 2023;11(9):218.</li>
+                <li>Slagter KW, Meijer HJA, Hentenaar DFM, et al. Immediate single-tooth implant placement with simultaneous bone augmentation vs delayed placement after ridge preservation in bony defect sites in the esthetic region: 5-year RCT. <em>J Periodontol.</em> 2021;92(12):1738–48.</li>
+                <li>Wu XY, Shi JY, Buti J, Lai HC, Tonetti MS. Buccal bone thickness and mid-facial soft tissue recession after various approaches for immediate implant placement: a network meta-analysis. <em>J Clin Periodontol.</em> 2023;50(4):? (online ahead of print).</li>
+                <li>Wu X-Y, Lai H-C, et al. Midfacial soft tissue recession following immediate implant placement with bone grafting in the esthetic area: systematic review and meta-analysis. <em>Int J Oral Maxillofac Implants.</em> 2023;38(2):239–50.</li>
+                <li>Spray JR, Black CG, Morris HF, Ochi S. The influence of bone thickness on facial marginal bone response. <em>J Periodontol.</em> 2000;71(7):1054–60.</li>
+                <li>Seyssens L, De Lat L, Cosyn J. Immediate implant placement with or without connective tissue graft: a systematic review and meta-analysis. <em>J Clin Periodontol.</em> 2021;48(2):284–301.</li>
+                <li>Chen ST, Buser D. Esthetic outcomes following immediate and early implant placement in the anterior maxilla: ITI Consensus. <em>Int J Oral Maxillofac Implants.</em> 2014;29(Suppl):186–215.</li>
+                <li>de Oliveira-Neto OB, Lemos CAA, Barbosa FT, de Sousa-Rodrigues CF, de Lima FJC. Immediate implants into infected sites: a systematic review and meta-analysis. <em>Med Oral Patol Oral Cir Bucal.</em> 2019;24(4):e518–e528.</li>
+                <li>Chatzopoulos GS, Doufexi AE, Koidou VP, Wolff LF. Survival rates and factors affecting outcomes of dental implants in smokers: a systematic review and meta-analysis. <em>J Clin Med.</em> 2022;11(15):4598.</li>
+                <li>Kupka JR, König J, Al-Nawas B, Sagheb K, Schiegnitz E. How far can we go? A 20-year meta-analysis of dental implant survival rates. <em>Clin Oral Investig.</em> 2024;28(10):? (online ahead of print).</li>
+                <li>Evans CDJ, Chen ST. Esthetic outcomes of immediate implant placements. <em>Clin Oral Implants Res.</em> 2008;19(1):73–80.</li>
+                <li>Hamilton A, et al. Selection criteria for immediate implant placement and restoration: a critical review. <em>Clin Oral Implants Res.</em> 2023;34(12):2331–50.</li>
+                <li>Borda MF, D’Souza R, Tay FR, et al. Comparative outcomes of endodontically treated teeth and dental implants: a systematic review. <em>Acta Odontol Scand.</em> 2025;83(2):91–101.</li>
+                <li>Zamparini F, Iandolo A, Fortini M, et al. Eight-year survival of retreatment of endodontically treated premolars compared with extraction and implant placement: a cohort study. <em>Clin Oral Investig.</em> 2025;29(4):1123–31.</li>
+                <li>Chen R, Wu Y, Wang X, et al. Effectiveness of immediate implant placement on survival, marginal bone loss and esthetic outcomes: a systematic review and meta-analysis. <em>J Dent.</em> 2025;141:104659.</li>
+              </ol>
+            </div>
+            <div class="actions">
+              <button class="ghost" data-goto="pC">Volver</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- GLOSARIO -->
+        <section class="panel" id="pGloss">
+          <div class="card">
+            <h2>Glosario</h2>
+            <div class="lead" style="max-height:60vh; overflow:auto; line-height:1.5">
+              <p><strong>3D (posición tridimensional):</strong> Ubicación espacial del implante en los ejes vestíbulo-palatino, mesio-distal y ápico-coronal para optimizar estabilidad ósea y estética de tejidos blandos.</p>
+              <p><strong>ARP (Alveolar Ridge Preservation / Preservación del reborde alveolar):</strong> Técnica pos-extracción sin colocación inmediata del implante que utiliza injerto óseo (± membrana) para reducir la reabsorción del alveolo y mantener volumen para una colocación diferida.</p>
+              <p><strong>ASA I–II (American Society of Anesthesiologists):</strong> Clasificación del riesgo médico; I = sano, II = enfermedad sistémica leve controlada. Criterio de selección para cirugía implantológica electiva.</p>
+              <p><strong>ATB (antibiótico):</strong> Quimioterapia sistémica indicada en escenarios específicos (p. ej., infección crónica controlable) junto a debridamiento y cierre, con seguimiento estricto.</p>
+              <p><strong>CBCT (Cone Beam Computed Tomography):</strong> Imagen 3D para valorar espesor e integridad de la tabla vestibular, fenotipo óseo, defectos y planificación del anclaje.</p>
+              <p><strong>CTG (Connective Tissue Graft / Injerto de tejido conectivo):</strong> Injerto blando (habitualmente palatino) para engrosar biotipo, disminuir riesgo de recesión y mejorar el perfil de emergencia, sobre todo en zona estética o fenotipo fino.</p>
+              <p><strong>ISQ (Implant Stability Quotient):</strong> Medida objetiva de estabilidad primaria; umbral clínico habitual: &gt;65 ISQ para provisionalización inmediata sin carga funcional.</p>
+              <p><strong>ITI (International Team for Implantology):</strong> Referente académico que propone la clasificación temporal de colocación del implante (Tipos 1–4).</p>
+              <p><strong>N·cm (Newton-centímetro):</strong> Unidad de torque de inserción; valores ≥35 N·cm se asocian a estabilidad suficiente para provisionalización inmediata sin contactos oclusales.</p>
+              <p><strong>Tipo 1 (colocación inmediata):</strong> Implante colocado en el mismo acto de la exodoncia, con anclaje apical/palatal, manejo del “gap” y, según caso, CTG/particulado.</p>
+              <p><strong>Tipo 2 (inmediato temprano):</strong> Colocación a 4–8 semanas pos-extracción (tejidos blandos cicatrizados; remodelado óseo inicial).</p>
+              <p><strong>Tipo 3 (temprano diferido):</strong> Colocación a 12–16 semanas (hueso parcialmente remodelado; mayor control de tejidos blandos).</p>
+              <p><strong>Tipo 4 (tardío/diferido):</strong> Colocación ≥6 meses tras la extracción, con el alveolo completamente cicatrizado; suele precederse de ARP si se requiere mantener volumen.</p>
+            </div>
             <div class="actions">
               <button class="ghost" data-goto="pC">Volver</button>
             </div>
@@ -317,6 +362,7 @@
   const state={ asa_ok:false, habitos_ok:false, expect_ok:false,
     vestibular:null, fenotipo:null, inf:null, estab:null, pos3d:null };
 
+  /* NAV */
   function go(id){
     panels.forEach(p=>p.classList.toggle('active',p.id===id));
     steps.forEach(s=>s.classList.toggle('active',s.dataset.target===id));
@@ -326,16 +372,19 @@
   document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.goto)));
   steps.forEach(s=>s.addEventListener('click',()=>go(s.dataset.target)));
 
+  /* RESET */
   function reset(){
     Object.keys(state).forEach(k=>state[k]=(typeof state[k]==='boolean')?false:null);
     document.querySelectorAll('.btn[data-on]').forEach(b=>b.removeAttribute('data-on'));
     document.querySelectorAll('.step').forEach(s=>s.dataset.state='');
-    chips.innerHTML=''; if(out){ out.className='result'; out.textContent='Completa los pasos para obtener la recomendación.'; }
+    chips.innerHTML='';
+    if(out){ out.className='result'; out.textContent='Completa los pasos para obtener la recomendación.'; }
     if(hint) hint.textContent=''; if(summary) summary.innerHTML='';
     go('p0');
   }
   document.querySelectorAll('[data-reset]').forEach(b=>b.addEventListener('click',reset));
 
+  /* SELECTORS */
   function toggleBoolean(btn,key){
     const on=!(btn.dataset.on==='true'); btn.dataset.on=on; state[key]=on;
     stampChip(); markStep('sA',(state.asa_ok&&state.habitos_ok&&state.expect_ok)?'ok':(state.asa_ok||state.habitos_ok||state.expect_ok)?'warn':'');
@@ -361,6 +410,7 @@
   });
   function markStep(id,st){ const s=document.getElementById(id); if(s) s.dataset.state=st||''; }
 
+  /* CHIPS + PROGRESS */
   function stampChip(){
     const map={
       asa_ok:['Paciente','ASA I–II / sin infección aguda / buen control'],
@@ -394,33 +444,99 @@
     const bar=document.getElementById('progress'); if(bar) bar.style.width=pct.toFixed(0)+'%';
     const s=steps.find(x=>x.classList.contains('active')); if(s) s.querySelector('small').textContent=(pct|0)+'%';
   }
+
+  /* DECISION ENGINE — determinístico según prioridades clínicas */
   function decide(){
+    if(!out) return;
+
     const aOK=(state.asa_ok&&state.habitos_ok&&state.expect_ok);
     const vb=state.vestibular, fen=state.fenotipo, inf=state.inf, stab=state.estab, pos=state.pos3d;
+
+    // notas acumulativas
     let notes=[];
-    if(!out) return;
-    if(inf==='aguda' || vb==='defecto' || stab==='dudosa' || pos==='no'){
-      out.className='result no';
-      out.textContent='Recomendación: ARP + Implante diferido (Tipo 4)';
-      notes=['8–12 semanas (tejido blando) / 3–4 meses (tejido duro)'];
-    }else if(vb==='ideal' && fen==='grueso' && aOK && stab==='ok' && pos==='ok' && (inf==='no' || inf===null)){
-      out.className='result ok';
-      out.textContent='Recomendación: Implante inmediato (Tipo 1)';
-      notes=['Manejo del gap (>1–2 mm o en estética): injerto particulado','CTG si fenotipo fino/línea alta'];
-    }else if(vb==='limite' && aOK && stab==='ok' && pos==='ok' && inf!=='aguda'){
-      out.className='result warn';
-      out.textContent='Implante inmediato con aumento (óseo y/o CTG) · Alternativa: ARP + diferido';
-    }else{
-      out.className='result warn';
-      out.textContent='Complete criterios para definir la recomendación.';
+
+    // 1) Infección aguda
+    if(inf==='aguda'){
+      setResult('no','Recomendación: ARP + Implante diferido (Tipo 4)');
+      notes.push('Resolver infección aguda antes de implantar.');
+      return finalize(notes);
     }
-    if(hint) hint.innerHTML=notes.length?('• '+notes.join('<br>• ')):'';
-    renderSummary();
+
+    // 2) Tabla <1.0 mm / dehiscencia
+    if(vb==='defecto'){
+      setResult('no','Recomendación: ARP + Implante diferido (Tipo 4)');
+      notes.push('Tabla vestibular deficiente: aumento simultáneo solo por manos expertas; por defecto, diferido.');
+      return finalize(notes);
+    }
+
+    // 3) Estabilidad dudosa o 3D no ideal
+    if(stab==='dudosa' || pos==='no'){
+      setResult('no','Recomendación: ARP + Implante diferido (Tipo 4)');
+      notes.push('Asegurar anclaje 3–5 mm, ≥35 N·cm / ISQ > 65 y palatinización para inmediato.');
+      return finalize(notes);
+    }
+
+    // 4) Criterios del paciente incompletos
+    if(!aOK){
+      setResult('no','Recomendación: ARP + Implante diferido (Tipo 4)');
+      notes.push('Optimizar sistémico, placa, hábitos y expectativas antes de considerar inmediato.');
+      return finalize(notes);
+    }
+
+    // 8) Datos incompletos (antes de seguir con 5-6, verifica nulls)
+    if([vb,fen,inf,stab,pos].some(v=>v===null)){
+      setResult('no','Recomendación: Diferido (por precaución; completar criterios)');
+      notes.push('Complete todos los campos para refinar la indicación.');
+      return finalize(notes);
+    }
+
+    // 5) Vestibular 1.0–1.8 mm con estabilidad OK, 3D OK, y sin aguda
+    if(vb==='limite' && stab==='ok' && pos==='ok' && inf!=='aguda'){
+      if(fen==='grueso'){
+        setResult('warn','Recomendación: Implante inmediato con aumento (óseo ± membrana)');
+        notes.push('Añadir injerto particulado; valorar membrana según defecto.');
+      }else{ // fenotipo fino
+        setResult('warn','Recomendación: Implante inmediato con aumento + CTG');
+        notes.push('Fenotipo fino/línea alta: considerar diferir si la demanda estética es muy alta.');
+      }
+      if(inf==='cronica') notes.push('Infección crónica controlable: riesgo ↑; seguimiento estricto.');
+      return finalize(notes);
+    }
+
+    // 6) Vestibular ≥2.0 mm con estabilidad OK, 3D OK, infección no/crónica
+    if(vb==='ideal' && stab==='ok' && pos==='ok' && (inf==='no' || inf==='cronica')){
+      if(fen==='grueso'){
+        setResult('ok','Recomendación: Implante inmediato (Tipo 1)');
+      }else{ // fenotipo fino
+        setResult('ok','Recomendación: Implante inmediato (Tipo 1) + CTG');
+        notes.push('Fenotipo fino: añadir CTG; en estética exigente, puede considerarse aumento.');
+      }
+      if(inf==='cronica') notes.push('Infección crónica controlable: riesgo ↑; seguimiento estricto.');
+      return finalize(notes);
+    }
+
+    // 7) Si no cumple requisitos de 5)–6) y no cayó en reglas previas → Diferido
+    setResult('no','Recomendación: ARP + Implante diferido (Tipo 4)');
+    if(inf==='cronica') notes.push('Infección crónica controlable sin cumplir criterios: diferir.');
+    // 9) En cualquier otra duda (sin violar prioridades), se podría considerar inmediato con aumento,
+    // pero por seguridad clínica dejamos Diferido como salida final.
+    return finalize(notes);
+
+    /* helpers */
+    function setResult(level,msg){
+      out.className = 'result ' + (level||'warn');
+      out.textContent = msg;
+    }
+    function finalize(n){
+      if(hint) hint.innerHTML = n.length ? ('• ' + n.join('<br>• ')) : '';
+      renderSummary();
+    }
   }
+
   function renderSummary(){
     if(!summary) return;
     const rows=[
-      ['Paciente', state.asa_ok&&state.habitos_ok&&state.expect_ok ? 'OK' : 'Incompleto'],
+      ['Paciente', (state.asa_ok&&state.habitos_ok&&state.expect_ok) ? 'OK' : 'Incompleto'],
       ['Tabla', state.vestibular||'—'],
       ['Fenotipo', state.fenotipo||'—'],
       ['Infección', state.inf||'—'],
@@ -429,6 +545,8 @@
     ];
     summary.innerHTML='<div class="grid cols-2">'+rows.map(([k,v])=>`<div class="btn" style="pointer-events:none;border-color:#243b68">${k}: <b>${v}</b></div>`).join('')+'</div>';
   }
+
+  // Bind compute
   const decBtn = document.querySelector('[data-goto="pC"]');
   if(decBtn) decBtn.addEventListener('click',decide);
   const sideC = document.getElementById('sC'); if(sideC) sideC.addEventListener('click',decide);
@@ -439,7 +557,7 @@
     side.classList.toggle('open', open);
     menu.setAttribute('aria-expanded', String(open));
   }
-  menu.addEventListener('click', ()=>toggleSide());
+  if(menu) menu.addEventListener('click', ()=>toggleSide());
   document.addEventListener('click', (e)=>{
     if(matchMedia('(max-width: 860px)').matches){
       if(side.classList.contains('open') && !side.contains(e.target) && e.target!==menu){
